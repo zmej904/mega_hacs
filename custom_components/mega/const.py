@@ -2,6 +2,8 @@
 import re
 from itertools import permutations
 
+from homeassistant.const import Platform
+
 DOMAIN = "mega"
 CONF_MEGA_ID = "mega_id"
 CONF_DIMMER = "dimmer"
