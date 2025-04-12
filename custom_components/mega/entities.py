@@ -150,7 +150,7 @@ class BaseMegaEntity(CoordinatorEntity, RestoreEntity):
             manufacturer="ab-log.ru",
             model_id=f"{self.mega.host}",
             sw_version=f"{self.mega.fw}",
-            # serial_number=f"{self._megaID}",
+            #serial_number=f"{self._mega_id}",
             configuration_url = f"http://{self.mega.host}/{self.mega.sec}"
         )
 
