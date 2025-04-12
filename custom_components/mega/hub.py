@@ -576,13 +576,18 @@ class MegaD:
                 for n in range(len(values)):
                     pt = f"{port}e{n}"
                     name = pt if not self.new_naming else f"{port:02}e{n:02}"
-                    ret["light"][pt].append(
-                        {
-                            "dimmer": True,
-                            "dimmer_scale": 16,
-                            "name": f"{self.id}_{name}",
-                        }
-                    )
+                    port_type = await self.request(pt=port, ext=f"{n}")
+                    port_mode = get_ext_mode(port_type)
+                    if port_mode == '0':
+                        ret["light"][pt].append(
+                            {
+                                "dimmer": True,
+                                "dimmer_scale": 16,
+                                "name": f"{self.id}_{name}",
+                            }
+                        )
+                    elif port_mode == '1':
+                        ret["light"][pt].append({})
             if cfg.pty == "4":  # and (cfg.gr == '0' or _cust.get(CONF_FORCE_I2C_SCAN))
                 # i2c в режиме ANY
                 scan = cfg.src.find("a", text="I2C Scan")
@@ -661,10 +666,11 @@ class MegaD:
             cfg.pop(x, None)
         cfg.update(new)
         self.lg.debug(f"new config: %s", cfg)
-        self.config.data = cfg
+        self.hass.config_entries.async_update_entry(entry=self.config, data=cfg)
         if reload_entry:
             await self.hass.config_entries.async_reload(self.config.entry_id)
         return cfg
+
 
     def _wrap_port_smooth(self, from_, to_, time):
         self.lg.debug("dim from %s to %s for %s seconds", from_, to_, time)

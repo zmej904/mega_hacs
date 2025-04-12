@@ -211,12 +211,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _hubs[entry.entry_id] = hub
     _subs[entry.entry_id] = entry.add_update_listener(updater)
     await hub.start()
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(
-                entry, platform
-            )
-        )
+    # for platform in PLATFORMS:
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
     await hub.updater.async_refresh()
     return True
 
@@ -268,13 +265,10 @@ async def async_migrate_entry(hass, config_entry: ConfigEntry):
     await hub.stop()
     new.update(cfg)
     _LOGGER.debug(f'new config: %s', new)
-    config_entry.data = new
-    config_entry.version = ConfigFlow.VERSION
-
+    hass.config_entries.async_update_entry(config_entry, data=new, version=ConfigFlow.VERSION)
     _LOGGER.info("Migration to version %s successful", config_entry.version)
 
     return True
-
 
 async def _save_service(hass: HomeAssistant, call: ServiceCall):
     mega_id = call.data.get('mega_id')
