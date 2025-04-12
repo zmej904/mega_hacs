@@ -12,10 +12,10 @@ from bs4 import BeautifulSoup
 
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import TEMP_CELSIUS, PERCENTAGE, LIGHT_LUX
+from homeassistant.const import PERCENTAGE, LIGHT_LUX, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from .config_parser import parse_config, DS2413, MCP230, MCP230_OUT, MCP230_IN, PCA9685
+from .config_parser import parse_config, DS2413, MCP230, MCP230_OUT, MCP230_IN, PCA9685, get_ext_mode
 from .const import (
     TEMP,
     HUM,
@@ -42,7 +42,7 @@ HUM_PATT = re.compile(r"hum:([01234567890\.]+)")
 PRESS_PATT = re.compile(r"press:([01234567890\.]+)")
 LUX_PATT = re.compile(r"lux:([01234567890\.]+)")
 PATTERNS = {TEMP: TEMP_PATT, HUM: HUM_PATT, PRESS: PRESS_PATT, LUX: LUX_PATT}
-UNITS = {TEMP: TEMP_CELSIUS, HUM: PERCENTAGE, PRESS: "mmHg", LUX: LIGHT_LUX}
+UNITS = {TEMP: UnitOfTemperature.CELSIUS, HUM: PERCENTAGE, PRESS: "mmHg", LUX: LIGHT_LUX}
 CLASSES = {
     TEMP: SensorDeviceClass.TEMPERATURE,
     HUM: SensorDeviceClass.HUMIDITY,
